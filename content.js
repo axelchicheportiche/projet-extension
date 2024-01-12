@@ -1,133 +1,106 @@
-const websiteList = [
-  "https://www.veja-store.com/fr_fr/c/homme",
-  "https://www.facebook.com/",
-  "https://www.lemonde.fr/",
-];
-
-let flagRescue = localStorage.getItem("flag");
-let timeRescue = localStorage.getItem("time");
-
-console.log(flagRescue);
-console.log(timeRescue);
-
-let timeNew = new Date().getTime();
-
-if (timeNew - parseInt(timeRescue) > 120000) {
-  console.log("le flag redevient null");
-  flagRescue = null;
+async function getWebsiteList() {
+  return new Promise((resolve, reject) => {
+    chrome.storage.local.get('websiteList', (result) => {
+      if (chrome.runtime.lastError) {
+        reject(chrome.runtime.lastError);
+      } else {
+        resolve(result.websiteList);
+      }
+    });
+  });
 }
 
-for (let i = 0; i < websiteList.length; i++) {
-  if (window.location.href.startsWith(websiteList[i]) && flagRescue === null) {
-    document.querySelector("body").innerHTML = `<!DOCTYPE html>
-    <html lang="fr">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Décompte de 30 secondes</title>
-        <style> body {
-          font-family: Verdana, Geneva, Tahoma, sans-serif;
-          text-align: center;
-          padding: 50px;
-          background-color: rgb(39, 37, 37);
+// Fonction principale asynchrone pour exécuter le reste du js
+async function mainContentScript() {
+  try {
+    // Récupérer la liste des sites web depuis le stockage local
+    let websiteList = await getWebsiteList();
+    console.log(websiteList)
+    // Reste de votre code ici
+    let flagRescue = localStorage.getItem("flag");
+    let timeRescue = localStorage.getItem("time");
 
-      }
+    let timeNew = new Date().getTime();
 
-      .countdown {
 
-          font-size: 24px;
-          font-weight: bold;
-          color: #f91818;
-          border: 2px solid #353434;
-          border-radius: 20px;
-          background-color: #000;
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-      }
+      //attente de 2 minutes avant que le site soit a nouveau bloqué
+    if (timeNew - parseInt(timeRescue) > 120000) {
+      console.log("le flag redevient null");
+      flagRescue = null;
+    }
 
-      img {
-          margin-bottom: 15px;
-          border-radius: 20px;
-      }</style>
-    </head>
-    <body>
+    for (let i = 0; i < websiteList.length; i++) {
+      if (window.location.href.startsWith(websiteList[i]) && flagRescue === null) {
+        // Le reste de votre code ici...
+        document.querySelector("body").innerHTML = `<!DOCTYPE html>
+        <html lang="fr">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Décompte de 30 secondes</title>
+            <style> body {
+              font-family: Verdana, Geneva, Tahoma, sans-serif;
+              text-align: center;
+              padding: 50px;
+              background-color: rgb(39, 37, 37);
 
-    <div class="countdown">
-    <h1>Vous devez attendre 30 secondes 😈</h1>
-    <p id="countdown">30</p>
-    <img src="https://media1.tenor.com/m/0yli7fSvvL0AAAAC/raccoon-yes.gif">
-    </div>
-      <button id="buttonReset2">reset</button>
+          }
 
-    </body>
-    </html>`;
+          .countdown {
 
-    // compteur :
+              font-size: 24px;
+              font-weight: bold;
+              color: #f91818;
+              border: 2px solid #353434;
+              border-radius: 20px;
+              background-color: #000;
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+          }
 
-    let seconds = 20;
-    let timer = setInterval(updateCountdown, 1000);
+          img {
+              margin-bottom: 15px;
+              border-radius: 20px;
+          }</style>
+        </head>
+        <body>
 
-    function updateCountdown() {
-      document.getElementById("countdown").textContent = seconds;
-      if (seconds === 0) {
-        clearInterval(timer);
+        <div class="countdown">
+        <h1>Vous devez attendre 30 secondes 😈</h1>
+        <p id="countdown">30</p>
+        <img src="https://media1.tenor.com/m/0yli7fSvvL0AAAAC/raccoon-yes.gif">
+        </div>
+          <button id="buttonReset2">reset</button>
 
-        flag = 1;
-        let time = new Date().getTime();
-        localStorage.setItem("flag", 1);
-        localStorage.setItem("time", time.toString());
-        window.location.reload();
-      } else {
-        seconds--;
+        </body>
+        </html>`;
+
+        // compteur :
+        let seconds = 20;
+        let timer = setInterval(updateCountdown, 1000);
+
+        function updateCountdown() {
+          document.getElementById("countdown").textContent = seconds;
+          if (seconds === 0) {
+            clearInterval(timer);
+
+            flag = 1;
+            let time = new Date().getTime();
+            localStorage.setItem("flag", 1);
+            localStorage.setItem("time", time.toString());
+            window.location.reload();
+          } else {
+            seconds--;
+          }
+        }
       }
     }
+  } catch (error) {
+    console.error("Erreur lors de la récupération de la liste des sites web dans le content script:", error);
   }
 }
 
-//A virer plus tard, utile juste pour les tests
-document.getElementById("buttonReset2").addEventListener("click", function () {
-  // Effacement de toutes les données stockées dans le stockage local du navigateur
-  localStorage.clear();
-});
-
-
-
-
-
-//Save de la prev avant merge
-
-// function executeOnPageLoad(){
-
-//   const websiteList = [
-//     "https://www.veja-store.com/fr_fr/c/homme",
-//     "https://www.facebook.com/",
-//     "https://www.lemonde.fr/",
-//   ];
-
-//   for (let i = 0; i < websiteList.length; i++) {
-//     if (window.location.href.startsWith(websiteList[i])) {
-//       var images = document.getElementsByTagName("img");
-//       for (var k = 0, l = images.length; k < l; k++) {
-//         images[k].src =
-//           "https://i.pinimg.com/originals/8a/39/03/8a390326148f845c0e26c23d56b7fde9.gif";
-//       }
-//     }
-//   }}
-
-//   window.onload = executeOnPageLoad;
-
-//save =
-// if (window.location.href === "https://www.veja-store.com/fr_fr/c/homme"|| window.location.href.startsWith('https://www.facebook.com/')) {
-//   var images = document.getElementsByTagName("img");
-//   for (var i = 0, l = images.length; i < l; i++) {
-//     images[i].src = "https://i.pinimg.com/originals/8a/39/03/8a390326148f845c0e26c23d56b7fde9.gif"
-//   }
-// }
-
-// //Bonus = afficher mot de passe =
-// const mdp = document.getElementsByTagName('input')
-// for (var i = 0, l = mdp.length; i < l; i++) {
-//     mdp[i].type = "text"
-//   }
+// Appel de la fonction principale asynchrone pour le content script
+mainContentScript();

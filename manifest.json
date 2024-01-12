@@ -6,11 +6,19 @@
   "action": {
     "default_popup":"popup.html"
   },
+  "permissions": [
+    "storage",
+    "activeTab"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
   "content_scripts": [
     {
       "matches": ["https://*/*"],
       "css": ["styles.css"],
       "js": ["content.js"]
+
     }
   ]
 }
