@@ -3,6 +3,7 @@ body {
     height: 500px;
     margin: 0;
     padding: 0;
+    font-family: "VT323";
   }
 
   .popup {
@@ -21,6 +22,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+
     color: #000;
     /* border: 2px solid #000; */
     /* padding: 6px; */
@@ -29,16 +31,18 @@ body {
     width: 250px;
     background-color: #ccc;
     border-radius: 3px;
-    font-size: 14px;
+    font-size: 15px;
 
   }
 
 .button {
   height: 2em;
-  background-color: #04AA6D; /* Green */
+  background-color: #000000; /* Green */
+  font-family: "VT323";
   border: none;
-  color: white;
+  color: rgb(0, 255, 0);
   border-radius: 0 3px 3px 0;
+  cursor:pointer;
 
 }
 
@@ -47,12 +51,18 @@ input[type='reset']
  {
   width: 5rem;
   justify-self: end;
+  font-family: "VT323";
   margin-bottom: 1em;
+  cursor:pointer;
+}
+input[value="https://"]{
+  font-family: "VT323";
 }
 
   h1 {
-    font-size: 24px;
-    margin-bottom: 15px;
+    font-size: 36px;
+    margin-bottom: 26px;
+    color: rgb(0, 255, 0);
   }
 
   p {

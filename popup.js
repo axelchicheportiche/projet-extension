@@ -22,7 +22,7 @@ async function main() {
           "arrayWebsite"
         ).innerHTML += `<div class="site">${websiteList[i]}<button id="erase${[
           i,
-        ]}" class="button"> Remove </button></div>`;
+        ]}" class="button"> rm -rf </button></div>`;
       }
     } else {
       websiteList = [];
@@ -49,7 +49,7 @@ async function main() {
         document.getElementById("arrayWebsite").innerHTML =
           `<div class="site">${
             websiteList[websiteList.length - 1]
-          }<button id="erase${websiteList.length - 1}">Remove</div>` + oldHTML;
+          }<button id="erase${websiteList.length - 1}"> rm -rf </div>` + oldHTML;
         console.log(websiteList);
         document.getElementById("inputAdd").value = "";
 
@@ -90,7 +90,7 @@ async function main() {
             "arrayWebsite"
           ).innerHTML += `<div class="site">${
             websiteList[i]
-          }<button id="erase${[i]}"> - </button></div>`;
+          }<button id="erase${[i]}"> rm -rf </button></div>`;
         }
         console.log(`Bouton ${eraseButton.id} cliqué.`);
         location.reload();

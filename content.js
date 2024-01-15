@@ -38,12 +38,26 @@ async function mainContentScript() {
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Décompte de 30 secondes</title>
-            <style> body {
+            <style>
+
+            body {
+              all: unset;
+          }
+            body {
+              color: red;
               font-family: Verdana, Geneva, Tahoma, sans-serif;
               text-align: center;
               padding: 50px;
               background-color: rgb(39, 37, 37);
 
+          }
+          .global {
+            color : red;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
           }
 
           .countdown {
@@ -66,13 +80,14 @@ async function mainContentScript() {
           }</style>
         </head>
         <body>
-
+          <div class="global">
         <div class="countdown">
         <h1>Vous devez attendre 30 secondes 😈</h1>
         <p id="countdown">30</p>
         <img src="https://media1.tenor.com/m/0yli7fSvvL0AAAAC/raccoon-yes.gif">
         </div>
-          <button id="buttonReset2">reset</button>
+        </div>
+
 
         </body>
         </html>`;
