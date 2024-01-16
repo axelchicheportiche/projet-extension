@@ -1,3 +1,5 @@
+
+// Fonction de récup liste des sites web
 async function getWebsiteList() {
   return new Promise((resolve, reject) => {
     chrome.storage.local.get('websiteList', (result) => {
@@ -10,6 +12,20 @@ async function getWebsiteList() {
   });
 }
 
+// Fonction de récup valeur du switch
+async function getSwitchFlag() {
+  return new Promise((resolve, reject) => {
+    chrome.storage.local.get("switchFlag", (result) => {
+      if (chrome.runtime.lastError) {
+        reject(chrome.runtime.lastError);
+      } else {
+        resolve(result.switchFlag);
+      }
+    });
+  });
+}
+
+
 // Fonction principale asynchrone pour exécuter le reste du js
 async function mainContentScript() {
   try {
@@ -21,16 +37,17 @@ async function mainContentScript() {
     let timeRescue = localStorage.getItem("time");
 
     let timeNew = new Date().getTime();
-
+    let switchFlag = await getSwitchFlag();
+    console.log("Le switchFalg =", switchFlag)
 
       //attente de 2 minutes avant que le site soit a nouveau bloqué
-    if (timeNew - parseInt(timeRescue) > 1) {
+    if (timeNew - parseInt(timeRescue) > 120000) {
       console.log("le flag redevient null");
       flagRescue = null;
     }
 
     for (let i = 0; i < websiteList.length; i++) {
-      if (window.location.href.startsWith(websiteList[i]) && flagRescue === null) {
+      if (window.location.href.startsWith(websiteList[i]) && flagRescue === null && switchFlag === true) {
         // Le reste de votre code ici...
         document.querySelector("body").innerHTML = `<!DOCTYPE html>
         <html lang="fr">
@@ -82,7 +99,7 @@ async function mainContentScript() {
         <body>
           <div class="global">
         <div class="countdown">
-        <h1>Vous devez attendre 30 secondes 😈</h1>
+        <div class="global">Vous devez attendre 30 secondes 😈</div>
         <p id="countdown">30</p>
         <img src="https://media1.tenor.com/m/0yli7fSvvL0AAAAC/raccoon-yes.gif">
         </div>
@@ -93,7 +110,7 @@ async function mainContentScript() {
         </html>`;
 
         // compteur :
-        let seconds = 2000;
+        let seconds = 30;
         let timer = setInterval(updateCountdown, 1000);
 
         function updateCountdown() {
