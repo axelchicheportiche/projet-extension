@@ -24,7 +24,7 @@ async function mainContentScript() {
 
 
       //attente de 2 minutes avant que le site soit a nouveau bloqué
-    if (timeNew - parseInt(timeRescue) > 120000) {
+    if (timeNew - parseInt(timeRescue) > 1) {
       console.log("le flag redevient null");
       flagRescue = null;
     }
@@ -93,7 +93,7 @@ async function mainContentScript() {
         </html>`;
 
         // compteur :
-        let seconds = 20;
+        let seconds = 2000;
         let timer = setInterval(updateCountdown, 1000);
 
         function updateCountdown() {
